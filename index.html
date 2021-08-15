@@ -2,7 +2,33 @@
 <html lang="en">
   <head>
     <script src="app.js" defer></script>
+    <style>
+      #display {
+        padding: 1rem 0.5rem;
+      }
+
+      span {
+        font-weight: 600;
+      }
+    </style>
     <title>Rock Paper Scissors</title>
   </head>
-  <body></body>
+  <body>
+    <div id="choices">
+      <h1>Rock, Paper, Scissors</h1>
+      <div id="scores">
+        <span>Player Score:</span>
+        <span id="playerScore"></span>
+        ||
+        <span>Cpu Score:</span>
+        <span id="cpuScore"></span>
+      </div>
+      <div id="display"></div>
+      <div>
+        <button class="playerChoice" name="rock">Rock</button>
+        <button class="playerChoice" name="paper">Paper</button>
+        <button class="playerChoice" name="scissors">Scissors</button>
+      </div>
+    </div>
+  </body>
 </html>
