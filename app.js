@@ -1,3 +1,12 @@
+let playerScore = 0
+let cpuScore = 0
+let gameActive = true
+const display = document.querySelector('#display')
+const playerScoreDisplay = document.querySelector('#playerScore')
+const cpuScoreDisplay = document.querySelector('#cpuScore')
+const selections = document.querySelectorAll('.playerChoice')
+const start = document.querySelector('#start')
+
 String.prototype.standard = function () {
   return this[0].toUpperCase() + this.slice(1).toLowerCase()
 }
@@ -11,52 +20,54 @@ const computerPlay = () => {
   return playSelection[index]
 }
 
+const updateDisplay = (winner, winnerChoice, loserChoice) => {
+  playerScoreDisplay.textContent = playerScore
+  cpuScoreDisplay.textContent = cpuScore
+
+  if (playerScore < 5 && cpuScore < 5) {
+    return (display.textContent = `${winner} wins! ${winnerChoice.standard()} beats ${loserChoice.standard()}`)
+  }
+
+  let finalWinner = playerScore === 5 ? 'Player' : 'CPU'
+  display.textContent = `${finalWinner} wins!`
+  gameActive = false
+}
+
 // primary game logic
 const playRound = (playerSelection, computerSelection) => {
-  const pChoice = playerSelection.toLowerCase()
-  const cChoice = computerSelection.toLowerCase()
-  let playerWins
+  if (gameActive) {
+    const pChoice = playerSelection.toLowerCase()
+    const cChoice = computerSelection.toLowerCase()
+    let playerWins
 
-  if (pChoice === cChoice) {
-    console.log('Tie round.')
-    return -1
-  }
-  if (pChoice === 'rock') {
-    if (cChoice === 'scissors') playerWins = true
-    if (cChoice === 'paper') playerWins = false
-  } else if (pChoice === 'paper') {
-    if (cChoice === 'rock') playerWins = true
-    if (cChoice === 'scissors') playerWins = false
-  } else if (pChoice === 'scissors') {
-    if (cChoice === 'paper') playerWins = true
-    if (cChoice === 'rock') playerWins = false
-  }
+    if (pChoice === cChoice) {
+      display.textContent = 'Tie round.'
+      return
+    }
+    if (pChoice === 'rock') {
+      if (cChoice === 'scissors') playerWins = true
+      if (cChoice === 'paper') playerWins = false
+    } else if (pChoice === 'paper') {
+      if (cChoice === 'rock') playerWins = true
+      if (cChoice === 'scissors') playerWins = false
+    } else if (pChoice === 'scissors') {
+      if (cChoice === 'paper') playerWins = true
+      if (cChoice === 'rock') playerWins = false
+    }
 
-  if (playerWins) {
-    console.log(
-      `Player wins. ${pChoice.standard()} beats ${cChoice.standard()}.`
-    )
-  } else {
-    console.log(`CPU wins. ${cChoice.standard()} beats ${pChoice.standard()}.`)
+    if (playerWins) {
+      playerScore++
+      return updateDisplay('Player', pChoice, cChoice)
+    }
+    if (!playerWins) {
+      cpuScore++
+      return updateDisplay('CPU', cChoice, pChoice)
+    }
   }
-
-  return playerWins
 }
 
-// game should play five rounds and return the winner
-const game = () => {
-  let playerWins = 0
-  let cpuWins = 0
-
-  for (let i = 0; i < 5; i++) {
-    let playerSelection = prompt('Please select rock, paper, or scissors.')
-    let computerSelection = computerPlay()
-    let playerWon = playRound(playerSelection, computerSelection)
-    if (playerWon !== -1 && playerWon) playerWins++
-    if (playerWon !== -1 && !playerWon) cpuWins++
-  }
-
-  if (playerWins === cpuWins) return console.log('Tie Game')
-  console.log(`${playerWins > cpuWins ? 'Player' : 'CPU'} wins!`)
-  console.log(`Final score: \nPlayer: ${playerWins} CPU: ${cpuWins}`)
-}
+selections.forEach((button) => {
+  button.addEventListener('click', () => {
+    playRound(button.name, computerPlay())
+  })
+})
